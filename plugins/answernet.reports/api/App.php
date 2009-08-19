@@ -67,6 +67,7 @@ class AnswernetReportWorkers extends Extension_Report {
 		@$countonly = DevblocksPlatform::importGPC($_REQUEST['countonly'],'integer',0);
 		@$sel_worker_id = DevblocksPlatform::importGPC($_REQUEST['worker_id'],'integer',0);
 		@$sel_group_id = DevblocksPlatform::importGPC($_REQUEST['group_select'],'string','');
+    @$active_worker = CerberusApplication::getActiveWorker();
 
 		list($g_id, $b_id) = CerberusApplication::translateTeamCategoryCode($sel_group_id);
 
@@ -93,6 +94,14 @@ class AnswernetReportWorkers extends Extension_Report {
 		$groups = DAO_Group::getAll();
 		$buckets = DAO_Bucket::getAll();
 		$tpl->assign('workers', $workers);
+
+//    if(!$active_worker->hasPriv('reports.group.allow.allgroups')) {
+      $membership = $active_worker->getMemberships();
+      foreach ($membership as $mem1) {
+        print_r($mem1->team_id);
+        echo '<br>';
+      }
+//    }
 
 		$sql = "SELECT w.id worker_id, t.id ticket_id, t.mask, t.subject, t.created_date, ";
 		$sql .= "t.updated_date, t.is_waiting, t.team_id, t.category_id ";

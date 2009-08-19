@@ -31,10 +31,9 @@
 		<tu tuid='acl.reports.group.workers'>
 			<tuv xml:lang="en_US"><seg>[Report Group] Can view the 'Worker Reports' group</seg></tuv>
 		</tu>
-    <tu tuid='acl.reports.group.workers'>
+    <tu tuid='acl.reports.group.allow.allgroups'>
       <tuv xml:lang="en_US"><seg>[Report Group] Allow user to view all groups inside a report</seg></tuv>
     </tu>
-
 		<!-- Reports Common -->
 
 		<tu tuid='reports.ui.average_per_day'>
