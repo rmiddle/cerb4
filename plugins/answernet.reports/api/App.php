@@ -95,19 +95,21 @@ class AnswernetReportWorkers extends Extension_Report {
 		$buckets = DAO_Bucket::getAll();
 		$tpl->assign('workers', $workers);
 
-//    if(!$active_worker->hasPriv('reports.group.allow.allgroups')) {
-      $membership = $active_worker->getMemberships();
-      foreach ($membership as $mem1) {
-        print_r($mem1->team_id);
-        echo '<br>';
-      }
-//    }
 
 		$sql = "SELECT w.id worker_id, t.id ticket_id, t.mask, t.subject, t.created_date, ";
 		$sql .= "t.updated_date, t.is_waiting, t.team_id, t.category_id ";
 		$sql .= "FROM ticket t inner join worker w on t.next_worker_id = w.id ";
 		$sql .= sprintf("WHERE updated_date > %d AND updated_date <= %d ", $start_time, $end_time);
 		$sql .= "AND t.is_deleted = 0 ";
+    if(!$active_worker->hasPriv('reports.group.allow.allgroups')) {
+      if (($membership = $active_worker->getMemberships())== array()) { return; }
+      foreach ($membership as $mem1) {
+        $group_list[] = $mem1->team_id;
+      }
+      $sql .= 'AND (t.team_id = ';
+      $sql .= implode (' or t.team_id = ', $group_list);
+      $sql .= ') ';
+    }
 		$sql .= "AND t.is_closed = 0 ";
 		$sql .= "AND t.spam_score < 0.9000 ";
 		$sql .= "AND t.spam_training != 'S' ";
