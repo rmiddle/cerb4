@@ -3474,7 +3474,14 @@ class CerberusWorker {
 		return DAO_Worker::getWorkerGroups($this->id);
 	}
 
-	function hasPriv($priv_id) {
+  /**
+   * @return array() of group_id numbers
+   */
+  function getMembershipsId() {
+    return DAO_Worker::getWorkerGroupsId($this->id);
+  }
+
+ 	function hasPriv($priv_id) {
 		// We don't need to do much work if we're a superuser
 		if($this->is_superuser)
 			return true;

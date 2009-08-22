@@ -632,7 +632,27 @@ class DAO_Worker extends DevblocksORMHelper {
 		return $memberships;
 	}
 
-	/**
+  /**
+   * @return array() of group_id numbers
+   */
+  static function getWorkerGroupsId($worker_id) {
+    // Get the cache
+    $rosters = DAO_Group::getRosters();
+
+    $memberships = array();
+
+    // Remove any groups our desired worker isn't in
+    if(is_array($rosters))
+    foreach($rosters as $group_id => $members) {
+      if(isset($members[$worker_id])) {
+        $memberships[] = $members[$worker_id]->team_id;
+      }
+    }
+
+    return $memberships;
+  }
+
+ 	/**
 	 * Store the workers last activity (provided by the page extension).
 	 *
 	 * @param integer $worker_id

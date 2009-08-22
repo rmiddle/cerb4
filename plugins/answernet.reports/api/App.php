@@ -1,10 +1,5 @@
 <?php
 
-class AnswernetReportsPlugin extends DevblocksPlugin {
-	function load(DevblocksPluginManifest $manifest) {
-	}
-};
-
 if (class_exists('DevblocksTranslationsExtension',true)):
 	class AnswernetTranslations extends DevblocksTranslationsExtension {
 		function __construct($manifest) {
@@ -102,13 +97,12 @@ class AnswernetReportWorkers extends Extension_Report {
 		$sql .= sprintf("WHERE updated_date > %d AND updated_date <= %d ", $start_time, $end_time);
 		$sql .= "AND t.is_deleted = 0 ";
     if(!$active_worker->hasPriv('reports.group.allow.allgroups')) {
-      if (($membership = $active_worker->getMemberships())== array()) { return; }
-      foreach ($membership as $mem1) {
-        $group_list[] = $mem1->team_id;
+      if (count($membership_list = $active_worker->getMembershipsId()) > 0) {
+        $sql .= ' AND t.team_id IN (' .implode(',',$membership_list). ') ';
+      } else {
+        return; // abort report not a member of any group.
       }
-      $sql .= 'AND (t.team_id = ';
-      $sql .= implode (' or t.team_id = ', $group_list);
-      $sql .= ') ';
+      unset($membership_list);
     }
 		$sql .= "AND t.is_closed = 0 ";
 		$sql .= "AND t.spam_score < 0.9000 ";
@@ -123,6 +117,9 @@ class AnswernetReportWorkers extends Extension_Report {
 			}
 		}
 		$sql .= "ORDER by w.last_name";
+echo '<pre>';
+print_r($sql);
+echo '</pre>';
 		$rs_buckets = $db->Execute($sql);
 
 		$ticket_assignments = array();
