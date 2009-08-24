@@ -1596,6 +1596,8 @@ class DAO_Address extends C4_ORMHelper {
 	const NUM_NONSPAM = 'num_nonspam';
 	const IS_BANNED = 'is_banned';
 	const LAST_AUTOREPLY = 'last_autoreply';
+  const IS_REGISTERED = 'is_registered';
+  const PASS = 'pass';
 
 	private function __construct() {}
 
@@ -1610,6 +1612,8 @@ class DAO_Address extends C4_ORMHelper {
 			'num_spam' => $translate->_('address.num_spam'),
 			'num_nonspam' => $translate->_('address.num_nonspam'),
 			'is_banned' => $translate->_('address.is_banned'),
+			'is_registered' => $translate->_('address.is_registered'),
+			'pass' => ucwords($translate->_('common.password')),
 		);
 	}
 
@@ -1647,8 +1651,8 @@ class DAO_Address extends C4_ORMHelper {
 
 		// Make sure the address doesn't exist already
 		if(null == ($check = self::getByEmail($full_address))) {
-			$sql = sprintf("INSERT INTO address (id,email,first_name,last_name,contact_org_id,num_spam,num_nonspam,is_banned,last_autoreply) ".
-				"VALUES (%d,%s,'','',0,0,0,0,0)",
+			$sql = sprintf("INSERT INTO address (id,email,first_name,last_name,contact_org_id,num_spam,num_nonspam,is_banned,is_registered,pass,last_autoreply) ".
+				"VALUES (%d,%s,'','',0,0,0,0,0,'',0)",
 				$id,
 				$db->qstr($full_address)
 			);
@@ -1677,11 +1681,6 @@ class DAO_Address extends C4_ORMHelper {
 		$db = DevblocksPlatform::getDatabaseService();
 		$logger = DevblocksPlatform::getConsoleLog();
 
-		$sql = "DELETE QUICK address_auth FROM address_auth LEFT JOIN address ON address_auth.address_id=address.id WHERE address.id IS NULL";
-		$db->Execute($sql);
-
-		$logger->info('[Maint] Purged ' . $db->Affected_Rows() . ' address_auth records.');
-
 		$sql = "DELETE QUICK address_to_worker FROM address_to_worker LEFT JOIN worker ON address_to_worker.worker_id=worker.id WHERE worker.id IS NULL";
 		$db->Execute($sql);
 
@@ -1700,9 +1699,6 @@ class DAO_Address extends C4_ORMHelper {
         $sql = sprintf("DELETE QUICK FROM address WHERE id IN (%s)", $address_ids);
         $db->Execute($sql) or die(__CLASS__ . '('.__LINE__.')'. ':' . $db->ErrorMsg()); /* @var $rs ADORecordSet */
 
-        // Auth logins
-        DAO_AddressAuth::delete($ids);
-
         // Custom fields
         DAO_CustomFieldValue::deleteBySourceIds(ChCustomFieldSource_Address::ID, $ids);
     }
@@ -1712,7 +1708,7 @@ class DAO_Address extends C4_ORMHelper {
 
 		$addresses = array();
 
-		$sql = sprintf("SELECT a.id, a.email, a.first_name, a.last_name, a.contact_org_id, a.num_spam, a.num_nonspam, a.is_banned, a.last_autoreply ".
+		$sql = sprintf("SELECT a.id, a.email, a.first_name, a.last_name, a.contact_org_id, a.num_spam, a.num_nonspam, a.is_banned, a.is_registered, a.pass, a.last_autoreply ".
 			"FROM address a ".
 			((!empty($where)) ? "WHERE %s " : " ").
 			"ORDER BY a.email ",
@@ -1731,6 +1727,8 @@ class DAO_Address extends C4_ORMHelper {
 			$address->num_spam = intval($rs->fields['num_spam']);
 			$address->num_nonspam = intval($rs->fields['num_nonspam']);
 			$address->is_banned = intval($rs->fields['is_banned']);
+			$address->is_registered = intval($rs->fields['is_registered']);
+			$address->pass = $rs->fields['pass'];
 			$address->last_autoreply = intval($rs->fields['last_autoreply']);
 			$addresses[$address->id] = $address;
 			$rs->MoveNext();
@@ -1860,7 +1858,9 @@ class DAO_Address extends C4_ORMHelper {
 			"o.name as %s, ".
 			"a.num_spam as %s, ".
 			"a.num_nonspam as %s, ".
-			"a.is_banned as %s ",
+			"a.is_banned as %s, ".
+			"a.is_registered as %s, ".
+			"a.pass as %s ",
 			    SearchFields_Address::ID,
 			    SearchFields_Address::EMAIL,
 			    SearchFields_Address::FIRST_NAME,
@@ -1869,7 +1869,9 @@ class DAO_Address extends C4_ORMHelper {
 			    SearchFields_Address::ORG_NAME,
 			    SearchFields_Address::NUM_SPAM,
 			    SearchFields_Address::NUM_NONSPAM,
-			    SearchFields_Address::IS_BANNED
+			    SearchFields_Address::IS_BANNED,
+			    SearchFields_Address::IS_REGISTERED,
+			    SearchFields_Address::PASS
 			 );
 
 		$join_sql =
@@ -1940,6 +1942,8 @@ class SearchFields_Address implements IDevblocksSearchFields {
 	const NUM_SPAM = 'a_num_spam';
 	const NUM_NONSPAM = 'a_num_nonspam';
 	const IS_BANNED = 'a_is_banned';
+  const IS_REGISTERED = 'a_is_registered';
+  const PASS = 'a_pass';
 
 	const ORG_NAME = 'o_name';
 
@@ -1957,6 +1961,8 @@ class SearchFields_Address implements IDevblocksSearchFields {
 			self::NUM_SPAM => new DevblocksSearchField(self::NUM_SPAM, 'a', 'num_spam', null, $translate->_('address.num_spam')),
 			self::NUM_NONSPAM => new DevblocksSearchField(self::NUM_NONSPAM, 'a', 'num_nonspam', null, $translate->_('address.num_nonspam')),
 			self::IS_BANNED => new DevblocksSearchField(self::IS_BANNED, 'a', 'is_banned', null, $translate->_('address.is_banned')),
+      self::IS_REGISTERED => new DevblocksSearchField(self::IS_REGISTERED, 'a', 'is_registered', null, $translate->_('address.is_registered')),
+      self::PASS => new DevblocksSearchField(self::PASS, 'a', 'pass', null, ucwords($translate->_('common.password'))),
 
 			self::CONTACT_ORG_ID => new DevblocksSearchField(self::CONTACT_ORG_ID, 'a', 'contact_org_id', null, $translate->_('address.contact_org_id')),
 			self::ORG_NAME => new DevblocksSearchField(self::ORG_NAME, 'o', 'name', null, $translate->_('contact_org.name')),
@@ -1974,85 +1980,6 @@ class SearchFields_Address implements IDevblocksSearchFields {
 		uasort($columns, create_function('$a, $b', "return strcasecmp(\$a->db_label,\$b->db_label);\n"));
 
 		return $columns;
-	}
-};
-
-class DAO_AddressAuth extends DevblocksORMHelper  {
-	const ADDRESS_ID = 'address_id';
-	const CONFIRM = 'confirm';
-	const PASS = 'pass';
-
-	static function update($id, $fields) {
-		$db = DevblocksPlatform::getDatabaseService();
-		$auth = self::get($id);
-
-		// Create if necessary
-		if(empty($auth)) {
-			$sql = sprintf("INSERT INTO address_auth (address_id, confirm, pass) ".
-				"VALUES (%d, '', '')",
-				$id
-			);
-			$db->Execute($sql) or die(__CLASS__ . '('.__LINE__.')'. ':' . $db->ErrorMsg()); /* @var $rs ADORecordSet */
-		}
-		unset($auth);
-
-		parent::_update($id, 'address_auth', $fields, self::ADDRESS_ID);
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $id
-	 * @return Model_AddressAuth
-	 */
-	static function get($id) {
-		$addresses = self::getWhere(sprintf("%s = %d",self::ADDRESS_ID,$id));
-
-		if(isset($addresses[$id]))
-			return $addresses[$id];
-
-		return null;
-	}
-
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $where
-	 * @return Model_AddressAuth[]
-	 */
-	static function getWhere($where=null) {
-		$db = DevblocksPlatform::getDatabaseService();
-
-		$sql = "SELECT address_id, confirm, pass ".
-			"FROM address_auth ".
-			(!empty($where) ? sprintf("WHERE %s ", $where) : "")
-		;
-		$rs = $db->Execute($sql) or die(__CLASS__ . '('.__LINE__.')'. ':' . $db->ErrorMsg()); /* @var $rs ADORecordSet */
-
-		$objects = array();
-
-		if(is_a($rs,'ADORecordSet'))
-		while(!$rs->EOF) {
-			$object = new Model_AddressAuth();
-			$object->address_id = intval($rs->fields['address_id']);
-			$object->confirm = $rs->fields['confirm'];
-			$object->pass = $rs->fields['pass'];
-			$objects[$object->address_id] = $object;
-			$rs->MoveNext();
-		}
-
-		return $objects;
-	}
-
-	static function delete($ids) {
-        if(!is_array($ids)) $ids = array($ids);
-        if(empty($ids)) return;
-
-		$db = DevblocksPlatform::getDatabaseService();
-
-        $address_ids = implode(',', $ids);
-        $sql = sprintf("DELETE QUICK FROM address_auth WHERE address_id IN (%s)", $address_ids);
-        $db->Execute($sql) or die(__CLASS__ . '('.__LINE__.')'. ':' . $db->ErrorMsg()); /* @var $rs ADORecordSet */
 	}
 };
 
@@ -3121,6 +3048,7 @@ class DAO_Ticket extends C4_ORMHelper {
 				implode(',', $merge_ticket_ids)
 			);
 			$db->Execute($sql);
+
 			// Requesters (merge)
 			$sql = sprintf("INSERT IGNORE INTO requester (address_id,ticket_id) ".
 				"SELECT address_id, %d FROM requester WHERE ticket_id IN (%s)",
