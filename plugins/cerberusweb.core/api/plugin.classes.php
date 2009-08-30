@@ -16,32 +16,32 @@
 ***********************************************************************/
 /*
  * IMPORTANT LICENSING NOTE from your friends on the Cerberus Helpdesk Team
- * 
- * Sure, it would be so easy to just cheat and edit this file to use the 
- * software without paying for it.  But we trust you anyway.  In fact, we're 
- * writing this software for you! 
- * 
- * Quality software backed by a dedicated team takes money to develop.  We 
- * don't want to be out of the office bagging groceries when you call up 
- * needing a helping hand.  We'd rather spend our free time coding your 
- * feature requests than mowing the neighbors' lawns for rent money. 
- * 
- * We've never believed in encoding our source code out of paranoia over not 
- * getting paid.  We want you to have the full source code and be able to 
- * make the tweaks your organization requires to get more done -- despite 
- * having less of everything than you might need (time, people, money, 
+ *
+ * Sure, it would be so easy to just cheat and edit this file to use the
+ * software without paying for it.  But we trust you anyway.  In fact, we're
+ * writing this software for you!
+ *
+ * Quality software backed by a dedicated team takes money to develop.  We
+ * don't want to be out of the office bagging groceries when you call up
+ * needing a helping hand.  We'd rather spend our free time coding your
+ * feature requests than mowing the neighbors' lawns for rent money.
+ *
+ * We've never believed in encoding our source code out of paranoia over not
+ * getting paid.  We want you to have the full source code and be able to
+ * make the tweaks your organization requires to get more done -- despite
+ * having less of everything than you might need (time, people, money,
  * energy).  We shouldn't be your bottleneck.
- * 
- * We've been building our expertise with this project since January 2002.  We 
- * promise spending a couple bucks [Euro, Yuan, Rupees, Galactic Credits] to 
- * let us take over your shared e-mail headache is a worthwhile investment.  
- * It will give you a sense of control over your in-box that you probably 
- * haven't had since spammers found you in a game of "E-mail Address 
+ *
+ * We've been building our expertise with this project since January 2002.  We
+ * promise spending a couple bucks [Euro, Yuan, Rupees, Galactic Credits] to
+ * let us take over your shared e-mail headache is a worthwhile investment.
+ * It will give you a sense of control over your in-box that you probably
+ * haven't had since spammers found you in a game of "E-mail Address
  * Battleship".  Miss. Miss. You sunk my in-box!
- * 
- * A legitimate license entitles you to support, access to the developer 
- * mailing list, the ability to participate in betas and the warm fuzzy 
- * feeling of feeding a couple obsessed developers who want to help you get 
+ *
+ * A legitimate license entitles you to support, access to the developer
+ * mailing list, the ability to participate in betas and the warm fuzzy
+ * feeling of feeding a couple obsessed developers who want to help you get
  * more done than 'the other guy'.
  *
  * - Jeff Standen, Mike Fogg, Brenan Cavish, Darren Sugita, Dan Hildebrandt
@@ -54,9 +54,9 @@ class ChCorePlugin extends DevblocksPlugin {
 
 class ChTranslations extends DevblocksTranslationsExtension {
 	function __construct($manifest) {
-		parent::__construct($manifest);	
+		parent::__construct($manifest);
 	}
-	
+
 	function getTmxFile() {
 		return dirname(dirname(__FILE__)) . '/strings.xml';
 	}
@@ -64,7 +64,7 @@ class ChTranslations extends DevblocksTranslationsExtension {
 
 class ChPageController extends DevblocksControllerExtension {
     const ID = 'core.controller.page';
-    
+
 	function __construct($manifest) {
 		parent::__construct($manifest);
 	}
@@ -84,7 +84,7 @@ class ChPageController extends DevblocksControllerExtension {
         }
         return NULL;
 	}
-	
+
 	// [TODO] We probably need a CerberusApplication scope for getting content that has ACL applied
 	private function _getAllowedPages() {
 		$active_worker = CerberusApplication::getActiveWorker();
@@ -92,7 +92,7 @@ class ChPageController extends DevblocksControllerExtension {
 
 		// [TODO] This may cause problems on other pages where an active worker isn't required
 		// Check RSS/etc (was bugged on login)
-		
+
 		// Check worker level ACL (if set by manifest)
 		foreach($page_manifests as $idx => $page_manifest) {
 			// If ACL policy defined
@@ -102,10 +102,10 @@ class ChPageController extends DevblocksControllerExtension {
 				}
 			}
 		}
-		
+
 		return $page_manifests;
 	}
-	
+
 	public function handleRequest(DevblocksHttpRequest $request) {
 	    $path = $request->path;
 		$controller = array_shift($path);
@@ -120,7 +120,7 @@ class ChPageController extends DevblocksControllerExtension {
 				    header("Status: 404");
 	        		die(); // 404
 	        		break;
-	        		
+
 	        	default:
 	        		return; // default page
 	        		break;
@@ -133,10 +133,10 @@ class ChPageController extends DevblocksControllerExtension {
 	        case NULL:
 	            // [TODO] Index/page render
 	            break;
-	            
+
 	        default:
 			    // Default action, call arg as a method suffixed with Action
-			    
+
 			    if($page->isVisible()) {
 					if(method_exists($page,$action)) {
 						call_user_func(array(&$page, $action)); // [TODO] Pass HttpRequest as arg?
@@ -149,7 +149,7 @@ class ChPageController extends DevblocksControllerExtension {
 	            break;
 	    }
 	}
-	
+
 	public function writeResponse(DevblocksHttpResponse $response) {
 	    $path = $response->path;
 		// [JAS]: Ajax? // [TODO] Explore outputting whitespace here for Safari
@@ -161,14 +161,14 @@ class ChPageController extends DevblocksControllerExtension {
 		$settings = CerberusSettings::getInstance();
 		$translate = DevblocksPlatform::getTranslationService();
 	    $active_worker = CerberusApplication::getActiveWorker();
-		
+
 		$visit = $session->getVisit();
 		$page_manifests = $this->_getAllowedPages();
 
 		$controller = array_shift($path);
 
 		// Default page [TODO] This is supposed to come from framework.config.php
-		if(empty($controller)) 
+		if(empty($controller))
 			$controller = 'home';
 
 	    // [JAS]: Require us to always be logged in for Cerberus pages
@@ -181,12 +181,12 @@ class ChPageController extends DevblocksControllerExtension {
 
 	    $page_id = $this->_getPageIdByUri($controller);
 		@$page = DevblocksPlatform::getExtension($page_id, true); /* @var $page CerberusPageExtension */
-        
+
         if(empty($page)) {
    		    header("Status: 404");
         	return; // [TODO] 404
 		}
-	    
+
 		// [JAS]: Listeners (Step-by-step guided tour, etc.)
 	    $listenerManifests = DevblocksPlatform::getExtensions('devblocks.listener.http');
 	    foreach($listenerManifests as $listenerManifest) { /* @var $listenerManifest DevblocksExtensionManifest */
@@ -196,36 +196,36 @@ class ChPageController extends DevblocksControllerExtension {
 
 	    $tpl->assign('active_worker', $active_worker);
         $tour_enabled = false;
-		
+
 		if(!empty($visit) && !is_null($active_worker)) {
 			$tour_enabled = intval(DAO_WorkerPref::get($active_worker->id, 'assist_mode', 1));
 			if(DEMO_MODE) $tour_enabled = 1; // override for DEMO
 
 	    	$active_worker_memberships = $active_worker->getMemberships();
 	    	$tpl->assign('active_worker_memberships', $active_worker_memberships);
-			
+
 			$unread_notifications = DAO_WorkerEvent::getUnreadCountByWorker($active_worker->id);
 			$tpl->assign('active_worker_notify_count', $unread_notifications);
-			
+
 			DAO_Worker::logActivity($active_worker->id, $page->getActivity());
 		}
 		$tpl->assign('tour_enabled', $tour_enabled);
-		
+
         // [JAS]: Variables provided to all page templates
 		$tpl->assign('settings', $settings);
 		$tpl->assign('session', $_SESSION);
 		$tpl->assign('translate', $translate);
 		$tpl->assign('visit', $visit);
 		$tpl->assign('license',CerberusLicense::getInstance());
-		
-		$tpl->assign('page_manifests',$page_manifests);		
+
+		$tpl->assign('page_manifests',$page_manifests);
 		$tpl->assign('page',$page);
 
 		$tpl->assign('response_uri', implode('/', $response->path));
-		
+
 		$core_tpl = DEVBLOCKS_PLUGIN_PATH . 'cerberusweb.core/templates/';
 		$tpl->assign('core_tpl', $core_tpl);
-		
+
 		// Prebody Renderers
 		$preBodyRenderers = DevblocksPlatform::getExtensions('cerberusweb.renderer.prebody', true);
 		if(!empty($preBodyRenderers))
@@ -235,16 +235,16 @@ class ChPageController extends DevblocksControllerExtension {
 		$postBodyRenderers = DevblocksPlatform::getExtensions('cerberusweb.renderer.postbody', true);
 		if(!empty($postBodyRenderers))
 			$tpl->assign('postbody_renderers', $postBodyRenderers);
-		
+
 		// Timings
 		$tpl->assign('render_time', (microtime(true) - DevblocksPlatform::getStartTime()));
 		if(function_exists('memory_get_usage') && function_exists('memory_get_peak_usage')) {
 			$tpl->assign('render_memory', memory_get_usage() - DevblocksPlatform::getStartMemory());
 			$tpl->assign('render_peak_memory', memory_get_peak_usage() - DevblocksPlatform::getStartPeakMemory());
 		}
-		
+
 		$tpl->display($core_tpl.'border.tpl');
-		
+
 //		$cache = DevblocksPlatform::getCacheService();
 //		$cache->printStatistics();
 	}
@@ -296,7 +296,7 @@ class ChRssSource_Notification extends Extension_RssSource {
 	function getSourceName() {
 		return "Notifications";
 	}
-	
+
 	function getFeedAsRss($feed) {
         $xmlstr = <<<XML
 		<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
@@ -312,7 +312,7 @@ XML;
         $channel->addChild('title', $feed->title);
         $channel->addChild('link', $url->write('',true));
         $channel->addChild('description', '');
-        
+
         // View
         $view = new C4_WorkerEventView();
         $view->name = $feed->title;
@@ -325,13 +325,13 @@ XML;
         list($results, $count) = $view->getData();
 
         // [TODO] We should probably be building this feed with Zend Framework for compliance
-        
+
         foreach($results as $event) {
         	$created = intval($event[SearchFields_WorkerEvent::CREATED_DATE]);
             if(empty($created)) $created = time();
 
             $eItem = $channel->addChild('item');
-            
+
             $escapedSubject = htmlspecialchars($event[SearchFields_WorkerEvent::TITLE],null,LANG_CHARSET_CODE);
             //filter out a couple non-UTF-8 characters (0xC and ESC)
             $escapedSubject = preg_replace("/[]/", '', $escapedSubject);
@@ -343,15 +343,15 @@ XML;
 //	            $link = $event[SearchFields_WorkerEvent::URL];
 	            $link = $url->write('c=home&a=redirectRead&id='.$event[SearchFields_WorkerEvent::ID], true);
 	            $eLink = $eItem->addChild('link', $link);
-	            
+
             } else {
 	            $link = $url->write('c=activity&tab=events', true);
 	            $eLink = $eItem->addChild('link', $link);
-            	
+
             }
-            	
+
             $eDate = $eItem->addChild('pubDate', gmdate('D, d M Y H:i:s T', $created));
-            
+
             $eGuid = $eItem->addChild('guid', md5($escapedSubject . $link . $created));
             $eGuid->addAttribute('isPermaLink', "false");
         }
@@ -364,11 +364,11 @@ class ChTaskSource_Org extends Extension_TaskSource {
 	function getSourceName() {
 		return "Orgs";
 	}
-	
+
 	function getSourceInfo($object_id) {
 		if(null == ($contact_org = DAO_ContactOrg::get($object_id)))
 			return;
-		
+
 		$url = DevblocksPlatform::getUrlService();
 		return array(
 			'name' => '[Org] '.$contact_org->name,
@@ -381,11 +381,11 @@ class ChTaskSource_Ticket extends Extension_TaskSource {
 	function getSourceName() {
 		return "Tickets";
 	}
-	
+
 	function getSourceInfo($object_id) {
 		if(null == ($ticket = DAO_Ticket::getTicket($object_id)))
 			return;
-		
+
 		$url = DevblocksPlatform::getUrlService();
 		return array(
 			'name' => '[Ticket] '.$ticket->subject,
@@ -398,7 +398,7 @@ class ChRssSource_Ticket extends Extension_RssSource {
 	function getSourceName() {
 		return "Tickets";
 	}
-	
+
 	function getFeedAsRss($feed) {
         $xmlstr = <<<XML
 		<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
@@ -414,7 +414,7 @@ XML;
         $channel->addChild('title', $feed->title);
         $channel->addChild('link', $url->write('',true));
         $channel->addChild('description', '');
-        
+
         // View
         $view = new C4_TicketView();
         $view->name = $feed->title;
@@ -425,39 +425,39 @@ XML;
 
         // Results
         list($tickets, $count) = $view->getData();
-        
+
         // [TODO] We should probably be building this feed with Zend Framework for compliance
-        
+
         foreach($tickets as $ticket) {
         	$created = intval($ticket[SearchFields_Ticket::TICKET_UPDATED_DATE]);
             if(empty($created)) $created = time();
 
             $eItem = $channel->addChild('item');
-            
+
             $escapedSubject = htmlspecialchars($ticket[SearchFields_Ticket::TICKET_SUBJECT],null,LANG_CHARSET_CODE);
             //filter out a couple non-UTF-8 characters (0xC and ESC)
             $escapedSubject = preg_replace("/[]/", '', $escapedSubject);
             $eTitle = $eItem->addChild('title', $escapedSubject);
 
             $eDesc = $eItem->addChild('description', $this->_getTicketLastAction($ticket));
-            
+
             $link = $url->write('c=display&id='.$ticket[SearchFields_Ticket::TICKET_MASK], true);
             $eLink = $eItem->addChild('link', $link);
-            	
+
             $eDate = $eItem->addChild('pubDate', gmdate('D, d M Y H:i:s T', $created));
-            
+
             $eGuid = $eItem->addChild('guid', md5($escapedSubject . $link . $created));
             $eGuid->addAttribute('isPermaLink', "false");
         }
 
         return $xml->asXML();
 	}
-	
+
 	private function _getTicketLastAction($ticket) {
 		static $workers = null;
 		$action_code = $ticket[SearchFields_Ticket::TICKET_LAST_ACTION_CODE];
 		$output = '';
-		
+
 		if(is_null($workers))
 			$workers = DAO_Worker::getAll();
 
@@ -483,17 +483,17 @@ XML;
 				);
 				break;
 		}
-		
+
 		return $output;
 	}
-	
+
 };
 
 class ChRssSource_Task extends Extension_RssSource {
 	function getSourceName() {
 		return "Tasks";
 	}
-	
+
 	function getFeedAsRss($feed) {
         $xmlstr = <<<XML
 		<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
@@ -509,7 +509,7 @@ XML;
         $channel->addChild('title', $feed->title);
         $channel->addChild('link', $url->write('',true));
         $channel->addChild('description', '');
-        
+
         // View
         $view = new C4_TaskView();
         $view->name = $feed->title;
@@ -522,15 +522,15 @@ XML;
         list($results, $count) = $view->getData();
 
         $task_sources = DevblocksPlatform::getExtensions('cerberusweb.task.source',true);
-        
+
         // [TODO] We should probably be building this feed with Zend Framework for compliance
-        
+
         foreach($results as $task) {
         	$created = intval($task[SearchFields_Task::DUE_DATE]);
             if(empty($created)) $created = time();
 
             $eItem = $channel->addChild('item');
-            
+
             $escapedSubject = htmlspecialchars($task[SearchFields_Task::TITLE],null,LANG_CHARSET_CODE);
             //filter out a couple non-UTF-8 characters (0xC and ESC)
             $escapedSubject = preg_replace("/[]/", '', $escapedSubject);
@@ -542,18 +542,18 @@ XML;
             if(isset($task_sources[$task[SearchFields_Task::SOURCE_EXTENSION]]) && isset($task[SearchFields_Task::SOURCE_ID])) {
             	$source_ext =& $task_sources[$task[SearchFields_Task::SOURCE_EXTENSION]]; /* @var $source_ext Extension_TaskSource */
             	$source_ext_info = $source_ext->getSourceInfo($task[SearchFields_Task::SOURCE_ID]);
-            	
+
 	            $link = $source_ext_info['url'];
 	            $eLink = $eItem->addChild('link', $link);
-	            
+
             } else {
 	            $link = $url->write('c=activity&tab=tasks', true);
 	            $eLink = $eItem->addChild('link', $link);
-            	
+
             }
-            	
+
             $eDate = $eItem->addChild('pubDate', gmdate('D, d M Y H:i:s T', $created));
-            
+
             $eGuid = $eItem->addChild('guid', md5($escapedSubject . $link . $created));
             $eGuid->addAttribute('isPermaLink', "false");
         }
