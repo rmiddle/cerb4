@@ -1,6 +1,6 @@
 <?php
 $db = DevblocksPlatform::getDatabaseService();
-$datadict = NewDataDictionary($db); /* @var $datadict ADODB_DataDict */ // ,'mysql' 
+$datadict = NewDataDictionary($db); /* @var $datadict ADODB_DataDict */ // ,'mysql'
 
 $tables = $datadict->MetaTables();
 $tables = array_flip($tables);
@@ -29,10 +29,10 @@ $rs = $db->Execute($sql);
 
 while(!$rs->EOF) {
 	$worker_id = intval($rs->fields['id']);
-	
+
 	$sql = sprintf("UPDATE watcher_mail_filter SET is_disabled = 1 WHERE worker_id = %d", $worker_id);
 	$db->Execute($sql);
-	
+
 	$rs->MoveNext();
 }
 
