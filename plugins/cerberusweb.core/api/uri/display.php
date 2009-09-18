@@ -525,6 +525,7 @@ class ChDisplayPage extends CerberusPageExtension {
 	function replyAction() {
 		@$id = DevblocksPlatform::importGPC($_REQUEST['id'],'integer',0);
 		@$is_forward = DevblocksPlatform::importGPC($_REQUEST['forward'],'integer',0);
+
 		$settings = CerberusSettings::getInstance();
 
 		$tpl = DevblocksPlatform::getTemplateService();
@@ -551,9 +552,6 @@ class ChDisplayPage extends CerberusPageExtension {
 
 		$workers = DAO_Worker::getAllActive();
 		$tpl->assign('workers', $workers);
-
-    $keyboard_shortcuts = intval(DAO_WorkerPref::get($active_worker->id,'keyboard_shortcuts',1));
-    $tpl->assign('pref_keyboard_shortcuts', $keyboard_shortcuts);
 
 		$teams = DAO_Group::getAll();
 		$tpl->assign('teams', $teams);
