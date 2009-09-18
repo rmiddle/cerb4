@@ -525,7 +525,6 @@ class ChDisplayPage extends CerberusPageExtension {
 	function replyAction() {
 		@$id = DevblocksPlatform::importGPC($_REQUEST['id'],'integer',0);
 		@$is_forward = DevblocksPlatform::importGPC($_REQUEST['forward'],'integer',0);
-
 		$settings = CerberusSettings::getInstance();
 
 		$tpl = DevblocksPlatform::getTemplateService();
@@ -553,6 +552,9 @@ class ChDisplayPage extends CerberusPageExtension {
 		$workers = DAO_Worker::getAllActive();
 		$tpl->assign('workers', $workers);
 
+    $keyboard_shortcuts = intval(DAO_WorkerPref::get($active_worker->id,'keyboard_shortcuts',1));
+    $tpl->assign('pref_keyboard_shortcuts', $keyboard_shortcuts);
+
 		$teams = DAO_Group::getAll();
 		$tpl->assign('teams', $teams);
 
@@ -574,6 +576,9 @@ class ChDisplayPage extends CerberusPageExtension {
 					DAO_Ticket::NEXT_WORKER_ID => $worker->id
 				));
 			}
+
+      $reply_status_default_reply = intval(DAO_WorkerPref::get($worker->id,'reply_status_default_reply', 1));
+      $tpl->assign('reply_status_default_reply', $reply_status_default_reply);
 
 			// Signatures
 			if(!empty($ticket_team) && !empty($ticket_team->signature)) {

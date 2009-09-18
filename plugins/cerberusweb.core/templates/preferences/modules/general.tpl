@@ -65,7 +65,7 @@
 	{/foreach}
 </table>
 <br>
-<b>$translate->_('prefences.account.email.address.add')}</b> <input type="text" name="new_email" size="45" value=""><br>
+<b>{$translate->_('prefences.account.email.address.add')}</b> <input type="text" name="new_email" size="45" value=""><br>
 <br>
 
 <h2>{$translate->_('prefences.account.preferences')|capitalize}</h2>
@@ -77,6 +77,27 @@
 
 <b>{$translate->_('prefences.account.keyboard.shortcuts')|capitalize}</b><br>
 <label><input type="checkbox" name="keyboard_shortcuts" value="1" {if $keyboard_shortcuts eq 1}checked{/if}> {$translate->_('common.enabled')|capitalize}</label><br>
+<br>
+
+<b>{$translate->_('prefences.account.message.status')|capitalize}</b><br>
+
+{$translate->_('prefences.account.message.status.reply')|capitalize}
+<label><input type="radio" name="reply_status_default_reply" value="0" {if $reply_status_default_reply eq 0}checked{/if}> {$translate->_('status.open')|capitalize}</label>
+<label><input type="radio" name="reply_status_default_reply" value="1" {if $reply_status_default_reply eq 1}checked{/if}> {$translate->_('status.waiting')|capitalize}</label>
+<label><input type="radio" name="reply_status_default_reply" value="2" {if $reply_status_default_reply eq 2}checked{/if}> {$translate->_('status.closed')|capitalize}</label>
+<br>
+
+{$translate->_('prefences.account.message.status.open')|capitalize}
+<label><input type="radio" name="reply_status_default_open" value="0" {if $reply_status_default_open eq 0}checked{/if}> {$translate->_('status.open')|capitalize}</label>
+<label><input type="radio" name="reply_status_default_open" value="1" {if $reply_status_default_open eq 1}checked{/if}> {$translate->_('status.waiting')|capitalize}</label>
+<label><input type="radio" name="reply_status_default_open" value="2" {if $reply_status_default_open eq 2}checked{/if}> {$translate->_('status.closed')|capitalize}</label>
+<br>
+
+{$translate->_('prefences.account.message.status.send')|capitalize}
+<label><input type="radio" name="reply_status_default_send" value="0" {if $reply_status_default_send eq 0}checked{/if}> {$translate->_('status.open')|capitalize}</label>
+<label><input type="radio" name="reply_status_default_send" value="1" {if $reply_status_default_send eq 1}checked{/if}> {$translate->_('status.waiting')|capitalize}</label>
+<label><input type="radio" name="reply_status_default_send" value="2" {if $reply_status_default_send eq 2}checked{/if}> {$translate->_('status.closed')|capitalize}</label>
+<br>
 <br>
 
 <b>{$translate->_('prefences.account.mail')|capitalize}</b><br>
