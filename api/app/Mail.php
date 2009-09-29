@@ -546,14 +546,14 @@ class CerberusMail {
 				));
 
 				// Auto-reply just to the initial requester
-				$mail->addTo(array($first_address->email));
+				$mail->addTo($first_address->email);
 
 			// Not an auto-reply
 			} else {
 				// Forwards
 				if(!empty($properties['to'])) {
 				    $aTo = DevblocksPlatform::parseCsvString(str_replace(';',',',$properties['to']));
-					
+
 					if(is_array($aTo))
 					foreach($aTo as $to_addy) {
 						$mail->addTo($to_addy);
