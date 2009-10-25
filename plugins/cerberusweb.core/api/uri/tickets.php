@@ -1940,6 +1940,7 @@ class ChTicketsPage extends CerberusPageExtension {
 	}
 
 	// post
+	// [TODO] Move to 'internal'
 	function viewBuildRssAction() {
 		@$view_id = DevblocksPlatform::importGPC($_POST['view_id']);
 		@$source = DevblocksPlatform::importGPC($_POST['source']);
