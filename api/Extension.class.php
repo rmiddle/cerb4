@@ -195,6 +195,17 @@ abstract class Extension_MailFilterCriteria extends DevblocksExtension {
   function saveConfig() { return array(); }
 };
 
+abstract class Extension_MailToGroupFilterCriteria extends DevblocksExtension {
+  function __construct($manifest) {
+    $this->DevblocksExtension($manifest,1);
+  }
+
+  function matches(Model_MailToGroupRule $filter, CerberusParserMessage $message) {}
+
+  function renderConfig(Model_MailToGroupRule $filter=null) {}
+  function saveConfig() { return array(); }
+};
+
 abstract class Extension_MailFilterAction extends DevblocksExtension {
   function __construct($manifest) {
     $this->DevblocksExtension($manifest,1);
@@ -203,6 +214,17 @@ abstract class Extension_MailFilterAction extends DevblocksExtension {
   function run(Model_PreParseRule $filter, CerberusParserMessage $message) {}
 
   function renderConfig(Model_PreParseRule $filter=null) {}
+  function saveConfig() { return array(); }
+};
+
+abstract class Extension_MailToGroupFilterAction extends DevblocksExtension {
+  function __construct($manifest) {
+    $this->DevblocksExtension($manifest,1);
+  }
+
+  function run(Model_MailToGroupRule $filter, CerberusParserMessage $message) {}
+
+  function renderConfig(Model_MailToGroupRule $filter=null) {}
   function saveConfig() { return array(); }
 };
 

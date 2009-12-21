@@ -1792,6 +1792,14 @@ class ChConfigurationPage extends CerberusPageExtension  {
 		$ticket_fields = DAO_CustomField::getBySource(ChCustomFieldSource_Ticket::ID);
 		$tpl->assign('ticket_fields', $ticket_fields);
 
+    // Criteria extensions
+    $filter_criteria_exts = DevblocksPlatform::getExtensions('cerberusweb.mail_to_group_filter.criteria', true);
+    $tpl->assign('filter_criteria_exts', $filter_criteria_exts);
+
+    // Action extensions
+    $filter_action_exts = DevblocksPlatform::getExtensions('cerberusweb.mail_to_group_filter.action', true);
+    $tpl->assign('filter_action_exts', $filter_action_exts);
+
 		$tpl->display('file:' . $tpl_path . 'configuration/tabs/mail/routing/peek.tpl');
    	}
 
