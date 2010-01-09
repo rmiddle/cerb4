@@ -58,16 +58,10 @@
 	</div>
 	<textarea name="signature" rows="4" cols="76">{$team->signature}</textarea><br>
 		E-mail Tokens:
-		<select name="sig_token" onchange="insertAtCursor(this.form.signature,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.signature.focus();">
-			<option value="">-- choose --</option>
-			<optgroup label="Worker">
-				<option value="#first_name#">First Name</option>
-				<option value="#last_name#">Last Name</option>
-				<option value="#title#">Title</option>
-      </optgroup>
-		</select>
 
-		{if !empty($default_signature)}
+    {html_options name="sig_token" options=$sig_token onchange="insertAtCursor(this.form.signature,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.signature.focus();"} 
+
+    {if !empty($default_signature)}
 		<button type="button" onclick="this.form.signature.value=this.form.default_signature.value;">set to default</button>
 		{/if}
 	<br>
@@ -82,28 +76,7 @@
 		<textarea name="auto_reply" rows="10" cols="76">{$group_settings.auto_reply}</textarea><br>
 			<b>E-mail Tokens:</b>
 
-			<select name="autoreply_token" onchange="insertAtCursor(this.form.auto_reply,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.auto_reply.focus();">
-				<option value="">-- choose --</option>
-				<optgroup label="General">
-					<option value="#timestamp#">Current Time</option>
-				</optgroup>
-				<optgroup label="First Requester">
-					<option value="#sender#">E-mail</option>
-					<option value="#sender_first#">First Name</option>
-				</optgroup>
-				<optgroup label="First Message">
-					<option value="#orig_body#">Message Body</option>
-				</optgroup>
-				<optgroup label="Ticket">
-					<option value="#mask#">Reference ID</option>
-					<option value="#ticket_id#">Internal ID</option>
-					<option value="#subject#">Subject</option>
-					<!--
-					<option value="#group#">Group Name</option>
-					<option value="#bucket#">Bucket Name</option>
-					 -->
-				</optgroup>
-			</select>
+    {html_options name="autoreply_token" options=$autoreply_token  onchange="insertAtCursor(this.form.auto_reply,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.auto_reply.focus();"}
 		<br>
 	</div>
 	<br>
@@ -115,24 +88,8 @@
 		<b>Send the following message:</b><br>
 		<textarea name="close_reply" rows="10" cols="76">{$group_settings.close_reply}</textarea><br>
 			E-mail Tokens:
-			<select name="closereply_token" onchange="insertAtCursor(this.form.close_reply,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.close_reply.focus();">
-				<option value="">-- choose --</option>
-				<optgroup label="General">
-					<option value="#timestamp#">Current Time</option>
-				</optgroup>
-				<optgroup label="First Requester">
-					<option value="#sender#">E-mail</option>
-					<option value="#sender_first#">First Name</option>
-				</optgroup>
-				<optgroup label="First Message">
-					<option value="#orig_body#">Message Body</option>
-				</optgroup>
-				<optgroup label="Ticket">
-					<option value="#mask#">Reference ID</option>
-					<option value="#ticket_id#">Internal ID</option>
-					<option value="#subject#">Subject</option>
-				</optgroup>
-			</select>
+
+    {html_options name="closereply_token" options=$closereply_token  onchange="insertAtCursor(this.form.close_reply,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.close_reply.focus();"} 
 		<br>
 	</div>
 	<br>

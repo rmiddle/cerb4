@@ -1,0 +1,58 @@
+<!DOCTYPE plugin SYSTEM "../../libs/devblocks/plugin.dtd">
+<plugin>
+	<id>cerberusweb.templates.english</id>
+	<name>[Cerb4] Standard Templates</name>
+	<description>Pluggable Template items that allow you to replace text with variable data under templaces.</description>
+	<author>WebGroup Media, LLC.</author>
+	<revision>0</revision>
+	<link>http://wiki.cerb4.com/wiki/New_Changes#cerberusweb.templates</link>
+
+	<extensions>
+
+    <extension point="cerberusweb.email_signature.template">
+      <id>cerberusweb.templates.en.email_signature</id>
+      <name>Standard Email Signature Templates</name>
+      <class>
+        <file>api/App.php</file>
+        <name>ChCoreEmailSignatureTemplate</name>
+      </class>
+      <params>
+      </params>
+    </extension>
+  
+    <extension point="cerberusweb.auto_reply.new">
+      <id>cerberusweb.templates.en.new</id>
+      <name>Standard New Templates</name>
+      <class>
+        <file>api/App.php</file>
+        <name>ChCoreAutoReplyNew</name>
+      </class>
+      <params>
+      </params>
+    </extension>
+  
+    <extension point="cerberusweb.auto_reply.close">
+      <id>cerberusweb.templates.en.close</id>
+      <name>Standard Close Templates</name>
+      <class>
+        <file>api/App.php</file>
+        <name>ChCoreAutoReplyClose</name>
+      </class>
+      <params>
+      </params>
+    </extension>
+	
+    <extension point="cerberusweb.email.template">
+      <id>cerberusweb.templates.en.email</id>
+      <name>Standard Email Templates</name>
+      <class>
+        <file>api/App.php</file>
+        <name>ChCoreEmailTemplate</name>
+      </class>
+      <params>
+      </params>
+    </extension>
+  
+	</extensions>
+	
+</plugin>

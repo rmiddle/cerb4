@@ -4069,48 +4069,17 @@ class Model_MailTemplate {
 	public function getRenderedContent($message_id) {
 		$raw = $this->content;
 
-		$replace = array();
-		$with = array();
-
-		$replace[] = '#timestamp#';
-		$with[] = date('r');
-
-		if(!empty($message_id)) {
-			$message = DAO_Ticket::getMessage($message_id);
-			$ticket = DAO_Ticket::getTicket($message->ticket_id);
-			$sender = DAO_Address::get($message->address_id);
-			$sender_org = DAO_ContactOrg::get($sender->contact_org_id);
-
-			$replace[] = '#sender_first_name#';
-			$replace[] = '#sender_last_name#';
-			$replace[] = '#sender_org#';
-
-			$with[] = $sender->first_name;
-			$with[] = $sender->last_name;
-			$with[] = (!empty($sender_org)?$sender_org->name:"");
-
-			$replace[] = '#ticket_id#';
-			$replace[] = '#ticket_mask#';
-			$replace[] = '#ticket_subject#';
-
-			$with[] = $ticket->id;
-			$with[] = $ticket->mask;
-			$with[] = $ticket->subject;
-		}
-
-		if(null != ($active_worker = CerberusApplication::getActiveWorker())) {
-			$worker = DAO_Worker::getAgent($active_worker->id); // most recent info (not session)
-
-			$replace[] = '#worker_first_name#';
-			$replace[] = '#worker_last_name#';
-			$replace[] = '#worker_title#';
-
-			$with[] = $worker->first_name;
-			$with[] = $worker->last_name;
-			$with[] = $worker->title;
-		}
-
-		return str_replace($replace, $with, $raw);
+    $processEmailTemplate = DevblocksPlatform::getExtensions('cerberusweb.email.template', true);
+    if(!empty($processEmailTemplate)) {
+      foreach($processEmailTemplate as $run_template) { /* Run the run loop and update properties */
+      try {
+        $run_template->run($message_id, &$raw);
+            } catch(Exception $e) {
+              // print_r($e);
+            }
+      }
+    }
+    return $raw;
 	}
 };
 

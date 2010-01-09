@@ -292,6 +292,43 @@ abstract class Extension_LoginAuthenticator extends DevblocksExtension {
 	}
 };
 
+abstract class Extension_EmailSignatureTemplate extends DevblocksExtension {
+  function __construct($manifest) {
+    $this->DevblocksExtension($manifest,1);
+  }
+
+  function run($signature) {}
+  function render($list) {} 
+};
+
+abstract class Extension_AutoReplyNew extends DevblocksExtension {
+  function __construct($manifest) {
+    $this->DevblocksExtension($manifest,1);
+  }
+
+  function run(CerberusTicket $ticket, $properties) {}
+  function render($list) {} 
+};
+
+
+abstract class Extension_AutoReplyClose extends DevblocksExtension {
+  function __construct($manifest) {
+    $this->DevblocksExtension($manifest,1);
+  }
+
+  function run(CerberusTicket $ticket, $properties) {}
+  function render($list) {} 
+};
+
+abstract class Extension_EmailTemplate extends DevblocksExtension {
+  function __construct($manifest) {
+    $this->DevblocksExtension($manifest,1);
+  }
+
+  function run($message_id, $template) {}
+  function render($type, $list) {} 
+};
+
 // [TODO] Convert to a controller extension
 abstract class CerberusCronPageExtension extends DevblocksExtension {
     const PARAM_ENABLED = 'enabled';

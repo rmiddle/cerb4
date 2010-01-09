@@ -771,17 +771,27 @@ class CerberusParser {
 				&& !empty($autoreply) 
 				&& $enumSpamTraining != CerberusTicketSpamTraining::SPAM
 				) {
-					CerberusMail::sendTicketMessage(array(
-						'ticket_id' => $id,
-						'message_id' => $email_id,
-						'content' => str_replace(
-				        	array('#ticket_id#','#mask#','#subject#','#timestamp#', '#sender#','#sender_first#','#orig_body#'),
-				        	array($id, $sMask, $sSubject, date('r'), $fromAddressInst->email, $fromAddressInst->first_name, ltrim($message->body)),
-				        	$autoreply
-						),
-						'is_autoreply' => true,
-						'dont_keep_copy' => true
-					));
+          $properties = array(
+            'ticket_id' => $id,
+            'message_id' => $email_id,
+            'content' => $autoreply,
+            'is_autoreply' => true,
+            'dont_keep_copy' => true,
+            'send_autoreply' => true
+          );
+          $ticket =  DAO_Ticket::getTicket($id);
+          $processAutoReplyClose = DevblocksPlatform::getExtensions('cerberusweb.auto_reply.close', true);
+          if(!empty($processAutoReplyClose)) {
+            foreach($processAutoReplyClose as $run_filter) { /* Run the run loop and update properties */
+              try {
+                $run_filter->run($ticket, &$properties);
+              } catch(Exception $e) {
+                  // print_r($e);
+              }
+            }
+          }
+          if ((isset($properties['send_autoreply'])) && ($properties['send_autoreply']) == true)
+            CerberusMail::sendTicketMessage($properties);
 			}
 			
 		} // end bIsNew
