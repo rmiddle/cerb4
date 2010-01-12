@@ -1,0 +1,22 @@
+Allow plugins to provide translation strings for Audit Log events
+
+Well working on a plugin to add additional audit log events into my system I found myself running into a problem. It seems that when you display the field change_fields inside the audit log you run it though a simple translation system using the fields from the ticket database. This works well unless you are tiring to display information that does not have a field connected to a ticket like a comment or time tracking event or anything else a plug-in designer might think of using. Then that is where the fun begins. As it stands right now it tacks on a "t_" in front of the field then displays it. That "t_" make things really bad inside the display and really limits what a plug-in can do with the audit log. It would be really nice if the plugin could simple run the field un altered though the translation system as plug-in designers can add translatable strings in to the audit log making the audit log much more usable as being part of a tool kit. You ask how major of a change in the code do I need to do to get this added abilty. The answer is just 1 line of code.
+
+diff --git a/plugins/cerberusweb.auditlog/templates/display/log/log_view.tpl b/plugins/cerberusweb.auditlog/templates/display/log/log_view.tpl
+index 4967468..b41edc5 100644
+--- a/plugins/cerberusweb.auditlog/templates/display/log/log_view.tpl
++++ b/plugins/cerberusweb.auditlog/templates/display/log/log_view.tpl
+@@ -70,7 +70,7 @@
+  {if isset($ticket_fields.$change_field)}
+  {$ticket_fields.$change_field->db_label|capitalize}
+  {else}
+- {$change_field}&nbsp;
++ {$translate->_($result.l_change_field)}
+  {/if}
+  </td>
+  {elseif $column=="l_change_value"}
+
+
+Thanks
+Robert
+
