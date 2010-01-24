@@ -1,6 +1,6 @@
 <?php
 if (class_exists('DevblocksTranslationsExtension',true)):
-	class ChReportsTranslations extends DevblocksTranslationsExtension {
+	class ChCoreTemplateTranslations extends DevblocksTranslationsExtension {
 		function __construct($manifest) {
 			parent::__construct($manifest);	
 		}

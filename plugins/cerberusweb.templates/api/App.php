@@ -18,7 +18,13 @@ class ChCoreEmailSignatureTemplate extends Extension_EmailSignatureTemplate {
   }
   
   function render($list) {
-    $list['Worker'] = array('#first_name#' => 'First Name', '#last_name#' => 'Last Name','#title#' => 'Title');
+		$translate = DevblocksPlatform::getTranslationService();
+		
+    $list['Worker'] = array(
+			'#first_name#' => $translate->_('worker.first_name'), 
+			'#last_name#' => $translate->_('worker.last_name'),
+			'#title#' => $translate->_('worker.title')
+			);
     return;
   }
 };
@@ -30,20 +36,31 @@ class ChCoreAutoReplyNew extends Extension_AutoReplyNew {
 
   function run(CerberusTicket $ticket, $properties) {
     $content = $properties['content'];
+		$message = DAO_Ticket::getMessage($ticket->first_message_id)
+		$address = DAO_Ticket::getRequestersByTicket($ticket->id)
     $properties['content'] = str_replace(
       array('#ticket_id#','#mask#','#subject#','#timestamp#', '#sender#','#sender_first#','#orig_body#'),
-      array($id, $sMask, $sSubject, date('r'), $fromAddressInst->email, $fromAddressInst->first_name, ltrim($message->body)),
+      array($ticket->id, $ticket->mask, $ticket->subject, date('r'), $address->email, $address->first_name, ltrim($message->body)),
       $content
     );
   }
   
-  function render($list) {
-    $list['General'] = array('#timestamp#' => 'Current Time');
-    $list['First Requester'] = array('#sender#' => 'E-mail', '#sender_first#' => 'First Name');
-    $list['First Message'] = array('#orig_body#' => 'Message Body');
-    $list['Ticket'] = array('#mask#' => 'Reference ID', '#ticket_id#' => 'Internal ID','#subject#' => 'Subject');
-    return;
-  }
+	function render($list) {
+		$translate = DevblocksPlatform::getTranslationService();
+		
+		$list['General'] = array('#timestamp#' => $translate->_('template.common.current_time'));
+		$list['First Requester'] = array(
+			'#sender#' => $translate->_('common.email'),
+			'#sender_first#' => $translate->_('address.first_name')
+			);
+		$list['First Message'] = array('#orig_body#' => $translate->_('template.common.message_body'));
+		$list['Ticket'] = array(
+			'#mask#' => $translate->_('template.common.reference_id'),
+			'#ticket_id#' => $translate->_('template.common.internal_id'),
+			'#subject#' => $translate->_('message.header.subject')
+			);
+		return;
+	}
 };
 
 class ChCoreAutoReplyClose extends Extension_AutoReplyClose {
@@ -76,10 +93,19 @@ class ChCoreAutoReplyClose extends Extension_AutoReplyClose {
   }
   
   function render($list) {
-    $list['General'] = array('#timestamp#' => 'Current Time');
-    $list['First Requester'] = array('#sender#' => 'E-mail', '#sender_first#' => 'First Name');
-    $list['First Message'] = array('#orig_body#' => 'Message Body');
-    $list['Ticket'] = array('#mask#' => 'Reference ID', '#ticket_id#' => 'Internal ID','#subject#' => 'Subject');
+		$translate = DevblocksPlatform::getTranslationService();
+		
+		$list['General'] = array('#timestamp#' => $translate->_('template.common.current_time'));
+		$list['First Requester'] = array(
+			'#sender#' => $translate->_('common.email'),
+			'#sender_first#' => $translate->_('address.first_name')
+			);
+		$list['First Message'] = array('#orig_body#' => $translate->_('template.common.message_body'));
+		$list['Ticket'] = array(
+			'#mask#' => $translate->_('template.common.reference_id'),
+			'#ticket_id#' => $translate->_('template.common.internal_id'),
+			'#subject#' => $translate->_('message.header.subject')
+			);
     return;
   }
 };
@@ -136,12 +162,26 @@ class ChCoreEmailTemplate extends Extension_EmailTemplate {
   }
   
   function render($type, $list) {
-    $list['General'] = array('#timestamp#' => 'Current Time');
-    if (2==$type) {
-      $list['Sender'] = array('#sender_first_name#' => 'First Name', '#sender_last_name#' => 'Last Name','#sender_org#' => 'Organization');
-      $list['Ticket'] = array('#mask#' => 'Reference ID', '#ticket_id#' => 'Internal ID','#subject#' => 'Subject');
+		$translate = DevblocksPlatform::getTranslationService();
+		
+		$list['General'] = array('#timestamp#' => $translate->_('template.common.current_time'));
+		if (2==$type) {
+      $list['Sender'] = array(
+				'#sender_first#' => $translate->_('address.first_name'),
+				'#sender_last_name#' =>  $translate->_('address.last_name'),
+				'#sender_org#' => $translate->_('address.contact_org_id')
+				);
+			$list['Ticket'] = array(
+				'#mask#' => $translate->_('template.common.reference_id'),
+				'#ticket_id#' => $translate->_('template.common.internal_id'),
+				'#subject#' => $translate->_('message.header.subject')
+				);
     }
-    $list['Worker'] = array('#first_name#' => 'First Name', '#last_name#' => 'Last Name','#title#' => 'Title');
+    $list['Worker'] = array(
+			'#first_name#' => $translate->_('worker.first_name'), 
+			'#last_name#' => $translate->_('worker.last_name'),
+			'#title#' => $translate->_('worker.title')
+			);
     return;
   }
 };

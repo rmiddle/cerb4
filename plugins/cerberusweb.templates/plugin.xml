@@ -9,7 +9,19 @@
 
 	<extensions>
 
-    <extension point="cerberusweb.email_signature.template">
+		<!-- Translations -->
+		<extension point="devblocks.i18n.strings">
+			<id>cerberusweb.templates.en..translations</id>
+			<name>[Cerb4] Standard Email Signature Templates Strings</name>
+			<class>
+				<file>api/Plugin.php</file>
+				<name>ChCoreTemplateTranslations</name>
+			</class>
+			<params>
+			</params>
+		</extension>
+
+		<extension point="cerberusweb.email_signature.template">
       <id>cerberusweb.templates.en.email_signature</id>
       <name>Standard Email Signature Templates</name>
       <class>

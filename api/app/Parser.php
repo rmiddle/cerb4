@@ -780,9 +780,9 @@ class CerberusParser {
             'send_autoreply' => true
           );
           $ticket =  DAO_Ticket::getTicket($id);
-          $processAutoReplyClose = DevblocksPlatform::getExtensions('cerberusweb.auto_reply.close', true);
-          if(!empty($processAutoReplyClose)) {
-            foreach($processAutoReplyClose as $run_filter) { /* Run the run loop and update properties */
+          $processAutoReplyNew = DevblocksPlatform::getExtensions('cerberusweb.auto_reply.new', true);
+          if(!empty($processAutoReplyNew)) {
+            foreach($processAutoReplyNew as $run_filter) { /* Run the run loop and update properties */
               try {
                 $run_filter->run($ticket, &$properties);
               } catch(Exception $e) {
