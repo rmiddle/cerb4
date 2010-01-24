@@ -1087,11 +1087,17 @@ class ChTimeTrackingAjaxController extends DevblocksControllerExtension {
 			
 		@$activity_id = DevblocksPlatform::importGPC($_POST['activity_id'],'integer',0);
 		@$time_actual_mins = DevblocksPlatform::importGPC($_POST['time_actual_mins'],'integer',0);
-		@$notes = DevblocksPlatform::importGPC($_POST['notes'],'string','');
+		@$notes_long = DevblocksPlatform::importGPC($_POST['notes'],'string','');
 		@$org_str = DevblocksPlatform::importGPC($_POST['org'],'string','');
 		@$source_extension_id = DevblocksPlatform::importGPC($_POST['source_extension_id'],'string','');
 		@$source_id = DevblocksPlatform::importGPC($_POST['source_id'],'integer',0);
 		
+		if (strlen($notes_long) > 255) {
+			@$notes=substr($notes_long,0,255);
+		} else {
+			@$notes=$notes_long;
+		}
+
 		// Translate org string into org id, if exists
 		$org_id = 0;
 		if(!empty($org_str)) {
@@ -1330,7 +1336,7 @@ class ChTimeTrackingAutoReplyClose extends Extension_AutoReplyClose {
 
 		$properties['content'] = str_replace(
       array('#time_tracked_total_min#'),
-      array($total_time_all)),
+      array($total_time_all),
       $content
     );
   }
