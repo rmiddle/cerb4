@@ -1289,9 +1289,10 @@ class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTempl
       $total_time_worker = intval($rs->fields['mins']);
     }
 
+//      array($total_time_worker, $total_time_all),
     $signature['content'] = str_replace(
       array('#time_tracked_worker_total#','#time_tracked_total_min#'),
-      array($total_time_worker, $total_time_all),
+      array("worker time", 'total time'),
       $content
     );
   }
