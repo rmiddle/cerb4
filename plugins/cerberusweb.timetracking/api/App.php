@@ -1256,7 +1256,7 @@ class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTempl
   }
 
   function run($signature) {
-		$content = $signature['content'];
+    $content = $signature['content'];
     $active_worker = CerberusApplication::getActiveWorker();
 		$total_time_worker = 0;
 		$total_time_all = 0;
@@ -1295,6 +1295,7 @@ class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTempl
       array("worker time", 'total time'),
       $content
     );
+		return;
   }
   
   function render($list) {
