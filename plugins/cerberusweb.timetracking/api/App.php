@@ -1257,7 +1257,6 @@ class ChTimeTrackingAutoReplyClose extends Extension_AutoReplyClose {
 
   function run(CerberusTicket $ticket, $properties) {
     $content = $properties['content'];
-    $group_settings = DAO_GroupSettings::getSettings();
 		$total_time_all = 0;
 
     // Adds total time worked per ticket to the token list.
@@ -1276,7 +1275,7 @@ class ChTimeTrackingAutoReplyClose extends Extension_AutoReplyClose {
     }
 
 		$properties['content'] = str_replace(
-      array('#time_tracked_total_min#'),
+      array('#time_tracker_total_min#'),
       array($total_time_all),
       $content
     );
@@ -1287,7 +1286,7 @@ class ChTimeTrackingAutoReplyClose extends Extension_AutoReplyClose {
 		
     $list['TimeTracker'] = 
 			array(
-				'#time_tracked_total_min#' => $translate->_('timetracking.ui.template.total.time.all.min')
+				'#time_tracker_total_min#' => $translate->_('timetracking.ui.template.total.time.all.min')
 			);
     return;
   }
