@@ -234,17 +234,6 @@
 			</params>
 		</extension>
 		 
-		<extension point="cerberusweb.email_signature.template">
-			<id>timetracking.email_signature</id>
-			<name>Time Tracking Email Signature Templates</name>
-			<class>
-				<file>api/App.php</file>
-				<name>ChTimeTrackingEmailSignatureTemplate</name>
-			</class>
-			<params>
-			</params>
-		</extension>
-
 		<extension point="cerberusweb.auto_reply.close">
 			<id>timetracking.auto_reply.close</id>
 			<name>Time Tracking Email Auto Close Templates</name>

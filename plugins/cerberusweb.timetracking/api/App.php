@@ -1249,68 +1249,6 @@ class ChTimeTrackingAjaxController extends DevblocksControllerExtension {
 	
 };
 
-if (class_exists('Extension_EmailSignatureTemplate')):
-class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTemplate {
-  function __construct($manifest) {
-    $this->DevblocksExtension($manifest,1);
-  }
-
-  function run($signature) {
-    $content = $signature['content'];
-    $active_worker = CerberusApplication::getActiveWorker();
-		$total_time_worker = 0;
-		$total_time_all = 0;
-
-    // Adds total time worked per ticket to the token list.
-    $db = DevblocksPlatform::getDatabaseService();
-
-    $sql = "SELECT sum(tte.time_actual_mins) mins ";
-    $sql .= "FROM timetracking_entry tte ";
-    $sql .= sprintf("WHERE tte.source_id =  %d ", $ticket->id);
-    $sql .= "AND tte.source_extension_id = 'timetracking.source.ticket' ";
-    $sql .= "GROUP BY tte.source_id ";
-
-    $rs = $db->Execute($sql);
-
-		if(is_a($rs,'ADORecordSet')) {
-      $total_time_worked = intval($rs->fields['mins']);
-    }
-
-		$sql = "SELECT sum(tte.time_actual_mins) mins ";
-    $sql .= "FROM timetracking_entry tte ";
-    $sql .= sprintf("WHERE tte.source_id =  %d ", $ticket->id);
-		$sql .= sprintf("AND tte.worker_id = %d ", $active_worker->id);
-    $sql .= "AND tte.source_extension_id = 'timetracking.source.ticket' ";
-    $sql .= "GROUP BY tte.source_id ";
-
-    $rs = $db->Execute($sql);
-
-		if(is_a($rs,'ADORecordSet')) {
-      $total_time_worker = intval($rs->fields['mins']);
-    }
-
-//      array($total_time_worker, $total_time_all),
-    $signature['content'] = str_replace(
-      array('#tt_worker_total#','#tt_total_min#'),
-      array("worker time", 'total time'),
-      $content
-    );
-		return;
-  }
-  
-  function render($list) {
-		$translate = DevblocksPlatform::getTranslationService();
-		
-    $list['TimeTracker'] = 
-			array(
-				'#tt_worker_total#' => $translate->_('timetracking.ui.template.total.time.worker'), 
-				'#tt_total_min#' => $translate->_('timetracking.ui.template.total.time.all.min')
-			);
-    return;
-  }
-};
-endif;
-
 if (class_exists('Extension_AutoReplyClose')):
 class ChTimeTrackingAutoReplyClose extends Extension_AutoReplyClose {
   function __construct($manifest) {
