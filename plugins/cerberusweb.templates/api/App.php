@@ -36,8 +36,8 @@ class ChCoreAutoReplyNew extends Extension_AutoReplyNew {
 
   function run(CerberusTicket $ticket, $properties) {
     $content = $properties['content'];
-		$message = DAO_Ticket::getMessage($ticket->first_message_id)
-		$address = DAO_Ticket::getRequestersByTicket($ticket->id)
+		$message = DAO_Ticket::getMessage($ticket->first_message_id);
+		$address = DAO_Ticket::getRequestersByTicket($ticket->id);
     $properties['content'] = str_replace(
       array('#ticket_id#','#mask#','#subject#','#timestamp#', '#sender#','#sender_first#','#orig_body#'),
       array($ticket->id, $ticket->mask, $ticket->subject, date('r'), $address->email, $address->first_name, ltrim($message->body)),
