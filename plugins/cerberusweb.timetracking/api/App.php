@@ -1291,7 +1291,7 @@ class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTempl
 
 //      array($total_time_worker, $total_time_all),
     $signature['content'] = str_replace(
-      array('#time_tracked_worker_total#','#time_tracked_total_min#'),
+      array('#tt_worker_total#','#tt_total_min#'),
       array("worker time", 'total time'),
       $content
     );
@@ -1303,8 +1303,8 @@ class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTempl
 		
     $list['TimeTracker'] = 
 			array(
-				'#time_tracked_worker_total#' => $translate->_('timetracking.ui.template.total.time.worker'), 
-				'#time_tracked_total_min#' => $translate->_('timetracking.ui.template.total.time.all.min')
+				'#tt_worker_total#' => $translate->_('timetracking.ui.template.total.time.worker'), 
+				'#tt_total_min#' => $translate->_('timetracking.ui.template.total.time.all.min')
 			);
     return;
   }
