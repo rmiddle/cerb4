@@ -596,6 +596,9 @@ class ChConfigurationPage extends CerberusPageExtension  {
 		$smtp_enc = $settings->get(CerberusSettings::SMTP_ENCRYPTION_TYPE,'None');
 		$smtp_max_sends = $settings->get(CerberusSettings::SMTP_MAX_SENDS,'20');
 		
+		$disable_worker_email_to_customer = $settings->get(CerberusSettings::DISABLE_WORKER_EMAIL_TO_CUSTOMER,'0');
+		$tpl->assign('disable_worker_email_to_customer', $disable_worker_email_to_customer);
+		
 		$default_ticket_reply_status = $settings->get(CerberusSettings::DEFAULT_TICKET_REPLY_STATUS,1);
 		$tpl->assign('default_ticket_reply_status', $default_ticket_reply_status);
 
@@ -1690,6 +1693,7 @@ class ChConfigurationPage extends CerberusPageExtension  {
 	    @$smtp_enc = DevblocksPlatform::importGPC($_REQUEST['smtp_enc'],'string','None');
 	    @$smtp_timeout = DevblocksPlatform::importGPC($_REQUEST['smtp_timeout'],'integer',30);
 	    @$smtp_max_sends = DevblocksPlatform::importGPC($_REQUEST['smtp_max_sends'],'integer',20);
+	    @$disable_worker_email_to_customer = DevblocksPlatform::importGPC($_REQUEST['disable_worker_email_to_customer'],'integer',0);
 
 	    @$smtp_auth_enabled = DevblocksPlatform::importGPC($_REQUEST['smtp_auth_enabled'],'integer', 0);
 	    if($smtp_auth_enabled) {
@@ -1713,6 +1717,7 @@ class ChConfigurationPage extends CerberusPageExtension  {
 	    $settings->set(CerberusSettings::DEFAULT_REPLY_PERSONAL, $default_reply_personal);
 	    $settings->set(CerberusSettings::DEFAULT_SIGNATURE, $default_signature);
 	    $settings->set(CerberusSettings::DEFAULT_SIGNATURE_POS, $default_signature_pos);
+	    $settings->set(CerberusSettings::DISABLE_WORKER_EMAIL_TO_CUSTOMER, $disable_worker_email_to_customer);
 	    $settings->set(CerberusSettings::SMTP_HOST, $smtp_host);
 	    $settings->set(CerberusSettings::SMTP_PORT, $smtp_port);
 	    $settings->set(CerberusSettings::SMTP_AUTH_ENABLED, $smtp_auth_enabled);
