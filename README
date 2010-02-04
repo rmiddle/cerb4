@@ -26,7 +26,6 @@ chd-1602 -> [Parser] The worker email treated as replies issue has come up sever
 chd-1607 -> [Comments] Add Email workers next to Notify workers 
 chd-1618 -> [ACL] Add an ACL to hide the hide access to the "Mail -> Workflow Tab"
 
-
 dev/XXX - Features not yet complete.  These are in various level of completion.
 
 X_X_X - Example 4_2_3 That would be version 4.2.3.  That would be the same as the master branch when WGM released 4.2.3
