@@ -25,6 +25,7 @@ chd-1594 -> [Support Center] After Confirmation Code is it possible to display a
 chd-1602 -> [Parser] The worker email treated as replies issue has come up several times - Incomplete Patch
 chd-1607 -> [Comments] Add Email workers next to Notify workers 
 chd-1618 -> [ACL] Add an ACL to hide the hide access to the "Mail -> Workflow Tab"
+chd-1656 -> [Time Tracker] Make the notes field longtext the same a comment instead of limited to just 255 Char.
 
 dev/XXX - Features not yet complete.  These are in various level of completion.
 
