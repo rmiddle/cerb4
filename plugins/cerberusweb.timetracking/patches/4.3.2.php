@@ -16,21 +16,16 @@
 ***********************************************************************/
 
 $db = DevblocksPlatform::getDatabaseService();
-$datadict = NewDataDictionary($db,'mysql'); /* @var $datadict ADODB2_mysql */ // ,'mysql' 
-
-$tables = $datadict->MetaTables();
-$tables = array_flip($tables);
+$datadict = NewDataDictionary($db); /* @var $datadict ADODB_DataDict */ // ,'mysql' 
 
 // ===========================================================================
 // Expand timetracking_entry max size from 255 to longtext
 
-if(isset($tables['timetracking_entry'])) {
-	$columns = $datadict->MetaColumns('timetracking_entry');
-	
-	if(isset($columns['notes'])) {
-		$sql = sprintf("ALTER TABLE timetracking_entry CHANGE COLUMN notes notes longtext DEFAULT '' NOT NULL");
-		$db->Execute($sql);
-	}
+$columns = $datadict->MetaColumns('timetracking_entry');
+
+if(isset($columns['NOTES'])) {
+	$sql = sprintf("ALTER TABLE timetracking_entry CHANGE COLUMN notes notes longtext DEFAULT '' NOT NULL");
+	$db->Execute($sql);
 }
 
 return TRUE;
