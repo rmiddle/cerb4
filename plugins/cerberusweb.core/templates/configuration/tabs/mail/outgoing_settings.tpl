@@ -75,14 +75,7 @@
 				<textarea name="default_signature" rows="4" cols="76">{$settings->get('default_signature')|escape:"html"}</textarea><br>
 				<div style="padding-left:10px;">
 					E-mail Signature Variables: 
-					<select name="sig_vars" onchange="insertAtCursor(this.form.default_signature,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.default_signature.focus();">
-						<option value="">-- choose --</option>
-						<optgroup label="Worker">
-							<option value="#first_name#">#first_name#</option>
-							<option value="#last_name#">#last_name#</option>
-							<option value="#title#">#title#</option>
-						</optgroup>
-					</select>
+					{html_options name="sig_token" options=$sig_token onchange="insertAtCursor(this.form.default_signature,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.signature.focus();"} 
 					<br>
 					<br>
 					

@@ -599,6 +599,19 @@ class ChConfigurationPage extends CerberusPageExtension  {
 		$pop3_accounts = DAO_Mail::getPop3Accounts();
 		$tpl->assign('pop3_accounts', $pop3_accounts);
 		
+		$sig_token = array('-- choose --');
+		$processEmailSignatureTemplate = DevblocksPlatform::getExtensions('cerberusweb.email_signature.template', true);
+		if(!empty($processEmailSignatureTemplate)) {
+			foreach($processEmailSignatureTemplate as $render_template) { /* Run the render loop and update properties */
+				try {
+					$render_template->render(&$sig_token);
+				} catch(Exception $e) {
+					// print_r($e);
+				}
+			}
+		}
+		$tpl->assign('sig_token', $sig_token);
+
 		$tpl->display('file:' . $this->_TPL_PATH . 'configuration/tabs/mail/index.tpl');
 	}
 	

@@ -583,11 +583,17 @@ class ChDisplayPage extends CerberusPageExtension {
 		        $signature = $settings->get(CerberusSettings::DEFAULT_SIGNATURE);
 			}
 
-			$tpl->assign('signature', str_replace(
-			        array('#first_name#','#last_name#','#title#'),
-			        array($worker->first_name,$worker->last_name,$worker->title),
-			        $signature
-			));
+			$processEmailSignatureTemplate = DevblocksPlatform::getExtensions('cerberusweb.email_signature.template', true);
+			if(!empty($processEmailSignatureTemplate)) {
+				foreach($processEmailSignatureTemplate as $run_template) { /* Run the run loop and update properties */
+					try {
+						$run_template->run($ticket->id, &$signature);
+						} catch(Exception $e) {
+							// print_r($e);
+						}
+					}
+				}
+			$tpl->assign('signature', $signature);
 			
 		    $signature_pos = $settings->get(CerberusSettings::DEFAULT_SIGNATURE_POS,0);
 			$tpl->assign('signature_pos', $signature_pos);
@@ -1259,6 +1265,19 @@ class ChDisplayPage extends CerberusPageExtension {
 		
 		$template = DAO_MailTemplate::get($id);
 		$tpl->assign('template', $template);
+
+		$EmailTemplateTokens = array('-- choose --');
+		$processEmailTemplate = DevblocksPlatform::getExtensions('cerberusweb.email.template', true);
+		if(!empty($processEmailTemplate)) {
+			foreach($processEmailTemplate as $render_template) { /* Run the render loop and update properties */
+				try {
+					$render_template->render($type, &$EmailTemplateTokens);
+				} catch(Exception $e) {
+					// print_r($e);
+				}
+			}
+		}
+		$tpl->assign('EmailTemplateTokens', $EmailTemplateTokens);
 		
 		$tpl->display('file:' . $this->_TPL_PATH . 'display/rpc/email_templates/template_edit_panel.tpl');
 	}

@@ -71,6 +71,45 @@ class ChGroupsPage extends CerberusPageExtension  {
 			$tpl->assign('team', $group);
 		}
 		
+		$sig_token = array('-- choose --');
+		$processEmailSignatureTemplate = DevblocksPlatform::getExtensions('cerberusweb.email_signature.template', true);
+		if(!empty($processEmailSignatureTemplate)) {
+			foreach($processEmailSignatureTemplate as $render_template) { /* Run the render loop and update properties */
+				try {
+					$render_template->render(&$sig_token);
+				} catch(Exception $e) {
+					// print_r($e);
+				}
+			}
+		}
+		$tpl->assign('sig_token', $sig_token);
+
+		$autoreply_token = array('-- choose --');
+		$processAutoReplyNew = DevblocksPlatform::getExtensions('cerberusweb.auto_reply.new', true);
+		if(!empty($processAutoReplyNew)) {
+			foreach($processAutoReplyNew as $render_template) { /* Run the render loop and update properties */
+				try {
+					$render_template->render(&$autoreply_token);
+				} catch(Exception $e) {
+					// print_r($e);
+				}
+			}
+		}
+		$tpl->assign('autoreply_token', $autoreply_token);
+
+		$closereply_token = array('-- choose --');
+		$processAutoReplyClose = DevblocksPlatform::getExtensions('cerberusweb.auto_reply.close', true);
+		if(!empty($processAutoReplyClose)) {
+			foreach($processAutoReplyClose as $render_template) { /* Run the render loop and update properties */
+				try {
+					$render_template->render(&$closereply_token);
+				} catch(Exception $e) {
+					// print_r($e);
+				}
+			}
+		}
+		$tpl->assign('closereply_token', $closereply_token);
+
 		$team_categories = DAO_Bucket::getByTeam($group_id);
 		$tpl->assign('categories', $team_categories);
 	    

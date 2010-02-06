@@ -825,29 +825,28 @@ class ChTicketsPage extends CerberusPageExtension {
 	
 	function getComposeSignatureAction() {
 		@$group_id = DevblocksPlatform::importGPC($_REQUEST['group_id'],'integer',0);
+		@$ticket_id = DevblocksPlatform::importGPC($_REQUEST['ticket_id'],'integer',0);
 		
 		$settings = CerberusSettings::getInstance();
 		$group = DAO_Group::getTeam($group_id);
 
-		$active_worker = CerberusApplication::getActiveWorker();
-		$worker = DAO_Worker::getAgent($active_worker->id); // Use the most recent info (not session)
 		$sig = $settings->get(CerberusSettings::DEFAULT_SIGNATURE,'');
 
 		if(!empty($group->signature)) {
 			$sig = $group->signature;
 		}
 
-		/*
-		 * [TODO] This is the 3rd place this replace happens, we really need 
-		 * to move the signature translation into something like CerberusApplication
-		 */
-		echo sprintf("\r\n%s\r\n",
-			str_replace(
-		        array('#first_name#','#last_name#','#title#'),
-		        array($worker->first_name,$worker->last_name,$worker->title),
-		        $sig
-			)
-		);
+		$processEmailSignatureTemplate = DevblocksPlatform::getExtensions('cerberusweb.email_signature.template', true);
+		if(!empty($processEmailSignatureTemplate)) {
+			foreach($processEmailSignatureTemplate as $run_template) { /* Run the run loop and update properties */
+				try {
+					$run_template->run($ticket_id, &$sig);
+				} catch(Exception $e) {
+					// print_r($e);
+				}
+			}
+		}
+		echo sprintf("\r\n%s\r\n", $sig);
 	}
 	
 	// Ajax
