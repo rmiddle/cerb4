@@ -498,6 +498,8 @@ class ChCoreEventListener extends DevblocksEventListenerExtension {
 			$tickets = DAO_Ticket::getTickets($ticket_ids);
 			
 			foreach($tickets as $ticket) { /* @var $ticket CerberusTicket */
+				$properties = array();
+
 				if(!isset($group_settings[$ticket->team_id][DAO_GroupSettings::SETTING_CLOSE_REPLY_ENABLED]))
 					continue;
 				if(1 == $ticket->is_deleted)
@@ -505,30 +507,26 @@ class ChCoreEventListener extends DevblocksEventListenerExtension {
 				
 				if($group_settings[$ticket->team_id][DAO_GroupSettings::SETTING_CLOSE_REPLY_ENABLED]
 				&& !empty($group_settings[$ticket->team_id][DAO_GroupSettings::SETTING_CLOSE_REPLY])) {
-					if(null != ($msg_first = DAO_Ticket::getMessage($ticket->first_message_id))) {
-						// First sender
-						$ticket_sender = '';
-						$ticket_sender_first = '';
-						if(null != ($sender_first = DAO_Address::get($msg_first->address_id))) {
-							$ticket_sender = $sender_first->email;
-							$ticket_sender_first = $sender_first->first_name;
-						}
-						
-						// First body
-						$ticket_body = $msg_first->getContent();
-					}
-					
-					CerberusMail::sendTicketMessage(array(
+					$properties = array(
 						'ticket_id' => $ticket->id,
 						'message_id' => $ticket->first_message_id,
-						'content' => str_replace(
-							array('#ticket_id#', '#mask#','#subject#','#timestamp#','#sender#','#sender_first#','#orig_body#'),
-							array($ticket->id, $ticket->mask, $ticket->subject, date('r'), $ticket_sender, $ticket_sender_first, ltrim($ticket_body)),
-							$group_settings[$ticket->team_id][DAO_GroupSettings::SETTING_CLOSE_REPLY]
-						),
+						'content' => $group_settings[$ticket->team_id][DAO_GroupSettings::SETTING_CLOSE_REPLY],
 						'is_autoreply' => false,
-						'dont_keep_copy' => true
-					));
+						'dont_keep_copy' => true,
+						'send_autoreply' => true
+					);
+					$processAutoReplyClose = DevblocksPlatform::getExtensions('cerberusweb.auto_reply.close', true);
+					if(!empty($processAutoReplyClose)) {
+						foreach($processAutoReplyClose as $run_filter) { /* Run the run loop and update properties */
+							try {
+								$run_filter->run($ticket, &$properties);
+							} catch(Exception $e) {
+								// print_r($e);
+							}
+						}
+					}
+					if ((isset($properties['send_autoreply'])) && ($properties['send_autoreply']) == true)
+						CerberusMail::sendTicketMessage($properties);
 				}
 			}
 		}

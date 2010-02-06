@@ -1243,6 +1243,118 @@ class ChTimeTrackingAjaxController extends DevblocksControllerExtension {
 	
 };
 
+if (class_exists('Extension_EmailSignatureTemplate')):
+class ChTimeTrackingEmailSignatureTemplate extends Extension_EmailSignatureTemplate {
+	function __construct($manifest) {
+		$this->DevblocksExtension($manifest,1);
+	}
+
+  function run($ticket_id, $signature) {
+    $active_worker = CerberusApplication::getActiveWorker();
+		$total_time_all = 0;
+		$total_time_worker_all = 0;
+
+		if($ticket_id==0) {
+	    $signature = str_replace(
+				array('#time_tracker_min_total#','#time_tracker_worker_min_total#'),
+				array(0, 0),
+				$signature
+			);
+			return;
+		}
+
+		// Adds total time worked per ticket to the token list.
+		$db = DevblocksPlatform::getDatabaseService();
+
+		$sql = "SELECT sum(tte.time_actual_mins) mins ";
+		$sql .= "FROM timetracking_entry tte ";
+		$sql .= sprintf("WHERE tte.source_id =  %d ", $ticket_id);
+		$sql .= "AND tte.source_extension_id = 'timetracking.source.ticket' ";
+		$sql .= "GROUP BY tte.source_id ";
+
+		$rs = $db->Execute($sql);
+
+		if(is_a($rs,'ADORecordSet')) {
+			$total_time_all = intval($rs->fields['mins']);
+		}
+
+		$sql = "SELECT sum(tte.time_actual_mins) mins ";
+		$sql .= "FROM timetracking_entry tte ";
+		$sql .= sprintf("WHERE tte.source_id =  %d ", $ticket_id);
+		$sql .= sprintf("AND tte.worker_id =  %d ", $active_worker->id);
+		$sql .= "AND tte.source_extension_id = 'timetracking.source.ticket' ";
+		$sql .= "GROUP BY tte.source_id ";
+
+		$rs = $db->Execute($sql);
+
+		if(is_a($rs,'ADORecordSet')) {
+			$total_time_worker_all = intval($rs->fields['mins']);
+		}
+		
+    $signature = str_replace(
+			array('#time_tracker_min_total#','#time_tracker_worker_min_total#'),
+			array($total_time_all, $total_time_worker_all),
+			$signature
+		);
+	}
+  
+	function render($list) {
+		$translate = DevblocksPlatform::getTranslationService();
+		
+		$list['TimeTracker'] = 
+			array(
+				'#time_tracker_min_total#' => $translate->_('timetracking.ui.template.total.time.all.min'),
+				'#time_tracker_worker_min_total#' => $translate->_('timetracking.ui.template.total.time.all.min.worker')
+			);
+		return;
+	}
+};
+endif;
+
+if (class_exists('Extension_AutoReplyClose')):
+class ChTimeTrackingAutoReplyClose extends Extension_AutoReplyClose {
+	function __construct($manifest) {
+		$this->DevblocksExtension($manifest,1);
+	}
+
+	function run(CerberusTicket $ticket, $properties) {
+		$content = $properties['content'];
+		$total_time_all = 0;
+
+		// Adds total time worked per ticket to the token list.
+		$db = DevblocksPlatform::getDatabaseService();
+
+		$sql = "SELECT sum(tte.time_actual_mins) mins ";
+		$sql .= "FROM timetracking_entry tte ";
+		$sql .= sprintf("WHERE tte.source_id =  %d ", $ticket->id);
+		$sql .= "AND tte.source_extension_id = 'timetracking.source.ticket' ";
+		$sql .= "GROUP BY tte.source_id ";
+
+		$rs = $db->Execute($sql);
+
+		if(is_a($rs,'ADORecordSet')) {
+			$total_time_all = intval($rs->fields['mins']);
+		}
+
+		$properties['content'] = str_replace(
+			array('#time_tracker_min_total#'),
+			array($total_time_all),
+			$content
+		);
+	}
+  
+	function render($list) {
+		$translate = DevblocksPlatform::getTranslationService();
+		
+		$list['TimeTracker'] = 
+			array(
+				'#time_tracker_min_total#' => $translate->_('timetracking.ui.template.total.time.all.min')
+			);
+		return;
+	}
+};
+endif;
+
 if (class_exists('Extension_ActivityTab')):
 class TimeTrackingActivityTab extends Extension_ActivityTab {
 	const VIEW_ACTIVITY_TIMETRACKING = 'activity_timetracking';

@@ -187,6 +187,20 @@
 			<tuv xml:lang="en_US"><seg>(e.g. 65.00)</seg></tuv>
 		</tu>
 		
+		<!--  Template Groups -->
+
+		<tu tuid='timetracking.ui.template.total.time.worker'>
+			<tuv xml:lang="en_US"><seg>Total time tracked for worker</seg></tuv>
+		</tu>
+
+		<tu tuid='timetracking.ui.template.total.time.all.min'>
+			<tuv xml:lang="en_US"><seg>Total time tracked in min</seg></tuv>
+		</tu>
+
+		<tu tuid='timetracking.ui.template.total.time.all.min.worker'>
+			<tuv xml:lang="en_US"><seg>Total time tracked for worker in min</seg></tuv>
+		</tu>
+
 		<!--  Report Groups -->
 
 		<tu tuid='timetracking.ui.reports'>
