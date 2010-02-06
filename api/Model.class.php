@@ -4072,10 +4072,11 @@ class Model_MailTemplate {
 		$processEmailTemplate = DevblocksPlatform::getExtensions('cerberusweb.email.template', true);
 		if(!empty($processEmailTemplate)) {
 			foreach($processEmailTemplate as $run_template) { /* Run the run loop and update properties */
-			try {
-				$run_template->run($message_id, &$raw);
-			} catch(Exception $e) {
+				try {
+					$run_template->run($message_id, &$raw);
+				} catch(Exception $e) {
 					// print_r($e);
+				}
 			}
 		}
 		return $raw;

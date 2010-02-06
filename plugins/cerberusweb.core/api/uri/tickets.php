@@ -826,7 +826,6 @@ class ChTicketsPage extends CerberusPageExtension {
 	function getComposeSignatureAction() {
 		@$group_id = DevblocksPlatform::importGPC($_REQUEST['group_id'],'integer',0);
 		@$ticket_id = DevblocksPlatform::importGPC($_REQUEST['ticket_id'],'integer',0);
-		
 		$settings = CerberusSettings::getInstance();
 		$group = DAO_Group::getTeam($group_id);
 

@@ -511,7 +511,6 @@ class ChCoreEventListener extends DevblocksEventListenerExtension {
 						'ticket_id' => $ticket->id,
 						'message_id' => $ticket->first_message_id,
 						'content' => $group_settings[$ticket->team_id][DAO_GroupSettings::SETTING_CLOSE_REPLY],
-						),
 						'is_autoreply' => false,
 						'dont_keep_copy' => true,
 						'send_autoreply' => true
