@@ -1238,9 +1238,10 @@ class ChContactsPage extends CerberusPageExtension {
 		
 		$sql = sprintf("SELECT first_name,last_name,email ".
 			"FROM address ".
-			"WHERE lower(email) LIKE %s ".
+			"WHERE (lower(email) LIKE %s ".
 			"OR lower(%s) LIKE %s ".
-			"OR lower(last_name) LIKE %s ".
+			"OR lower(last_name) LIKE %s) ".
+			"AND is_banned = 0 ".
 			"ORDER BY first_name, last_name, email",
 			$db->qstr($starts_with),
 			$db->Concat('first_name',"' '",'last_name'),
