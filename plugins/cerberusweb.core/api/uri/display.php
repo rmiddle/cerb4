@@ -583,6 +583,19 @@ class ChDisplayPage extends CerberusPageExtension {
 		        $signature = $settings->get(CerberusSettings::DEFAULT_SIGNATURE);
 			}
 
+			$fields = DAO_CustomField::getBySource(ChCustomFieldSource_Worker::ID);
+			$custom_fields = DAO_CustomFieldValue::getValuesBySourceIds(ChCustomFieldSource_Worker::ID, $worker->id);
+		
+			foreach ($fields as $field_id => $field) {
+				if($field->group_id==0) {
+					$signature = str_replace(
+						array('#cf_worker_' . $field->id . '#'),
+						array($custom_fields[$worker->id][$field->id]),
+						$signature
+					);
+				}
+			}
+			
 			$tpl->assign('signature', str_replace(
 			        array('#first_name#','#last_name#','#title#'),
 			        array($worker->first_name,$worker->last_name,$worker->title),

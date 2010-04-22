@@ -71,6 +71,22 @@ class ChGroupsPage extends CerberusPageExtension  {
 			$tpl->assign('team', $group);
 		}
 		
+		$sig_token = array('-- choose --');
+		$sig_token['Worker'] = array(
+			'#first_name#' => $translate->_('worker.first_name'), 
+			'#last_name#' => $translate->_('worker.last_name'),
+			'#title#' => $translate->_('worker.title')
+			);
+		// Custom Fields
+		$fields = DAO_CustomField::getBySource(ChCustomFieldSource_Worker::ID);
+		foreach ($fields as $field_id => $field) {
+			if($field->group_id==0) {
+					$cf_worker['#cf_worker_' . $field->id . '#'] = $field->name;
+			}
+		}
+		$sig_token['Custom Worker Fields'] = $cf_worker;
+		$tpl->assign('sig_token', $sig_token);
+		
 		$team_categories = DAO_Bucket::getByTeam($group_id);
 		$tpl->assign('categories', $team_categories);
 	    

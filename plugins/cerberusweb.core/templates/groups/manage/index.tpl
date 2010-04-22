@@ -58,17 +58,10 @@
 	</div>
 	<textarea name="signature" rows="4" cols="76">{$team->signature}</textarea><br>
 		E-mail Tokens: 
-		<select name="sig_token" onchange="insertAtCursor(this.form.signature,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.signature.focus();">
-			<option value="">-- choose --</option>
-			<optgroup label="Worker">
-				<option value="#first_name#">First Name</option>
-				<option value="#last_name#">Last Name</option>
-				<option value="#title#">Title</option>
-			</optgroup>
-		</select>
+			{html_options name="sig_token" options=$sig_token onchange="insertAtCursor(this.form.signature,this.options[this.selectedIndex].value);this.selectedIndex=0;this.form.signature.focus();"} 
 		
 		{if !empty($default_signature)}
-		<button type="button" onclick="this.form.signature.value=this.form.default_signature.value;">set to default</button>
+		<button type="button" onclick="this.form.signature.value=this.form.signature.value;">set to default</button>
 		{/if}
 	<br> 
 	</div>

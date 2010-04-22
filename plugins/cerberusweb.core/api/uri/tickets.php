@@ -837,6 +837,19 @@ class ChTicketsPage extends CerberusPageExtension {
 			$sig = $group->signature;
 		}
 
+		$fields = DAO_CustomField::getBySource(ChCustomFieldSource_Worker::ID);
+		$custom_fields = DAO_CustomFieldValue::getValuesBySourceIds(ChCustomFieldSource_Worker::ID, $worker->id);
+		
+		foreach ($fields as $field_id => $field) {
+			if($field->group_id==0) {
+				$sig = str_replace(
+					array('#cf_worker_' . $field->id . '#'),
+					array($custom_fields[$worker->id][$field->id]),
+					$sig
+				);
+			}
+		}
+			
 		/*
 		 * [TODO] This is the 3rd place this replace happens, we really need 
 		 * to move the signature translation into something like CerberusApplication
